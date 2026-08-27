@@ -1,0 +1,18 @@
+build/
+compile_commands.json
+pipeline_out/
+Testing/
+
+*.o
+*.out
+
+# exempt the goldens.
+*.pgm
+*.ppm
+!tests/golden/*.pgm
+!tests/golden/*.ppm
+
+# exempt sample frame and the dark frame the build needs.
+*.raw
+!packed000.raw
+!black_packed000.raw

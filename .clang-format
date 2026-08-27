@@ -1,0 +1,83 @@
+---
+# Base style; everything below overrides it.
+BasedOnStyle: LLVM
+Language:     Cpp
+Standard:     Latest
+
+# ── The alignment family (the part you care about) ───────────────────────────
+
+# Align '=' across consecutive lines:
+#   int    a   = 1;
+#   double bb  = 2;
+#   x          = 3;
+AlignConsecutiveAssignments:
+  Enabled:          true
+  AcrossEmptyLines: false   # don't bridge blank lines
+  AcrossComments:   false   # don't bridge comment-only lines
+  AlignCompound:    true    # also align +=, -=, etc.
+  PadOperators:     true    # pad so the operators themselves line up
+
+# Align variable *names* in consecutive declarations:
+#   int    a;
+#   double bb;
+#   MyType cccc;
+AlignConsecutiveDeclarations:
+  Enabled:          true
+  AcrossEmptyLines: false
+  AcrossComments:   false
+
+# Align consecutive bit-field colons:
+#   unsigned a : 1;
+#   unsigned bb : 4;
+AlignConsecutiveBitFields:
+  Enabled:          true
+  AcrossEmptyLines: false
+  AcrossComments:   false
+
+# Align the value side of consecutive #define macros:
+#   #define SHORT   1
+#   #define LONGER  2
+AlignConsecutiveMacros:
+  Enabled:          true
+  AcrossEmptyLines: false
+  AcrossComments:   false
+
+# Align trailing line comments:
+#   int a;    // one
+#   double b; // two
+AlignTrailingComments:
+  Kind:           Always
+  OverEmptyLines: 0
+
+# Align escaped newlines in multiline macros to the left-most column needed.
+AlignEscapedNewlines: Left
+
+# Align operands of binary/ternary expressions when they wrap.
+AlignAfterOpenBracket: Align
+AlignOperands:         Align
+
+# Align '\' and array-of-struct initializers nicely.
+AlignArrayOfStructures: Left
+
+# ── Supporting settings so alignment is actually visible ─────────────────────
+
+# Wider columns give alignment room to breathe; bump if you like.
+ColumnLimit:    150
+IndentWidth:    4
+TabWidth:       4
+UseTab:         Never
+
+# Don't collapse short things onto one line — alignment needs real lines.
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+
+# Pointer/reference binding — keep consistent so declaration alignment is clean.
+PointerAlignment:        Left      # int* p;  (vs.  int *p;)
+ReferenceAlignment:      Left
+DerivePointerAlignment:  false
+
+SeparateDefinitionBlocks: Always
+...
