@@ -8,7 +8,7 @@
 #   Both halves run on the Pi. Build ../pi_capture first.
 #
 # SIMPLEST SETUP:
-# Have a ../pi_capture dir.
+# Have a ../pi_capture dir: https://github.com/MajesticGreenBean/pi_capture
 
 set -euo pipefail
 

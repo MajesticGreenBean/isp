@@ -3,7 +3,11 @@
 Dev and tested with RAW10 Bayer frame off a Sony IMX219 and produces a viewable colour image. 
 No 3rd party stuffs (except some calibrated numbers from imx219 :P).
 
-Frames might come from pi_caputre project on a Raspberry Pi.
+Frames might come from the [pi_capture](https://github.com/MajesticGreenBean/pi_capture) project on a Raspberry Pi.
+
+![](docs/img/cover.png)
+
+*The sample frame for development of this pipeline,  RAW10 Bayer frame from an IMX219.*
 
 ## The pipeline
 
@@ -20,6 +24,34 @@ unpack RAW10 -> black level -> white balance -> demosaic -> colour matrix -> gam
 | **Colour matrix** | 3×3 correction for filter crosstalk, interpolated between six calibrated illuminants from imx219 software |
 | **Gamma** | 2.2 power law, then clamp to 8-bit. |
 
+## Stage by stage
+
+**From the sensor:** One colour per photosite, through a Bayer filter.
+The face at 2x, and one eye at 8x to see "mosaic":
+
+![](docs/img/01_bayer_mosaic.png)
+
+**White balance.** Grey-world scales R and B until the scene averages neutral, taking 
+the green off. Unfortunately the pipeline is not dumping out a preview that is 
+bilinear-but-unbalanced, so the difference here is both in white balance and sharpness (NN vs bilinear):
+
+![](docs/img/02_white_balance.png)
+
+**Demosaic** interpolates the two missing colours at every pixel. Mosaic on the left, filled in on the right:
+
+![](docs/img/03_demosaic.png)
+
+**Colour matrix.** The 3x3 undoes filter crosstalk, which pulls saturation up:
+
+![](docs/img/04_ccm.png)
+
+**Gamma.** Everything up to here is linear light, and on an sRGB display, clearly looks far too dark. Gamma encode into display space, done last after everyone before has finished with the "colorings":
+
+![](docs/img/05_gamma.png)
+
+> Previews of the pre-gamma stages above have a display gamma applied for presentation only,
+> otherwise they would all look like the left half of the last figure.
+
 ## Build and run
 
 ```bash
@@ -30,7 +62,7 @@ cmake -S . -B build && cmake --build build
 ./build/isp --packed packed000.raw out.pgm --dark black_packed000.raw
 ```
 
-On a Pi with the [capture program](../pi_capture/) next door, `capture_and_process.sh`
+On a Pi with [pi_capture](https://github.com/MajesticGreenBean/pi_capture) cloned next door, `capture_and_process.sh`
 does both halves in one command — capture a fresh frame, then develop it.
 
 It will write 8 stage previews to `build/pipeline_out/`, then prints some stats about what it has computed, example:
